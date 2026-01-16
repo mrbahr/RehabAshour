@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -10,761 +9,222 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#3B82F6",
-                        secondary: "#10B981",
-                        danger: "#EF4444",
-                        warning: "#F59E0B",
-                        dark: "#1F2937",
-                        light: "#F9FAFB"
-                    },
-                    fontFamily: {
-                        'arabic': ['"Cairo"', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-        }
-        .rtl {
-            direction: rtl;
-        }
-        .ltr {
-            direction: ltr;
-        }
+        body { font-family: 'Cairo', sans-serif; }
+        .rtl { direction: rtl; }
+        .ltr { direction: ltr; }
     </style>
 </head>
-<body class="min-h-screen bg-gray-50 font-arabic">
-    <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-4 space-x-reverse">
-                    <div class="bg-primary p-3 rounded-lg">
-                        <i class="fas fa-wallet text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-bold text-dark">Money Tracker</h1>
-                        <p class="text-gray-600">تطبيق تتبع المال والإنفاق</p>
-                    </div>
-                </div>
-                
-                <div class="flex items-center space-x-4 space-x-reverse">
-                    <div class="text-right">
-                        <p class="text-gray-600">الرصيد الحالي</p>
-                        <p class="text-2xl font-bold text-primary" id="currentBalance">5,250.00 <span class="text-lg">ج.م</span></p>
-                    </div>
-                    <div class="relative">
-                        <img src="https://picsum.photos/40?random=1" alt="صورة المستخدم" class="w-10 h-10 rounded-full">
-                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
-                    </div>
-                </div>
+<body class="min-h-screen bg-gray-50">
+
+<!-- Header -->
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-4 space-x-reverse">
+            <div class="bg-blue-500 p-3 rounded-lg">
+                <i class="fas fa-wallet text-white text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Money Tracker</h1>
+                <p class="text-gray-600">تطبيق تتبع المال والإنفاق</p>
             </div>
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Column - Balance and Quick Actions -->
-            <div class="lg:col-span-1 space-y-6">
-                <!-- Balance Card -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h2 class="text-xl font-bold text-dark mb-4">الرصيد الشهري</h2>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">الراتب الشهري</span>
-                            <span class="text-lg font-bold text-primary">8,000 ج.م</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">المصروفات</span>
-                            <span class="text-lg font-bold text-danger">2,750 ج.م</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">الإيرادات الإضافية</span>
-                            <span class="text-lg font-bold text-secondary">0 ج.م</span>
-                        </div>
-                        <div class="border-t pt-4">
-                            <div class="flex justify-between items-center">
-                                <span class="text-lg font-bold text-dark">الرصيد المتبقي</span>
-                                <span class="text-2xl font-bold text-primary" id="remainingBalance">5,250 ج.م</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h2 class="text-xl font-bold text-dark mb-4">إجراءات سريعة</h2>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="showAddTransaction('expense')" class="bg-danger hover:bg-red-700 text-white p-4 rounded-lg flex flex-col items-center justify-center transition duration-300">
-                            <i class="fas fa-minus-circle text-2xl mb-2"></i>
-                            <span>إضافة مصروف</span>
-                        </button>
-                        <button onclick="showAddTransaction('income')" class="bg-secondary hover:bg-green-700 text-white p-4 rounded-lg flex flex-col items-center justify-center transition duration-300">
-                            <i class="fas fa-plus-circle text-2xl mb-2"></i>
-                            <span>إضافة إيراد</span>
-                        </button>
-                        <button onclick="showSalaryModal()" class="bg-primary hover:bg-blue-700 text-white p-4 rounded-lg flex flex-col items-center justify-center transition duration-300">
-                            <i class="fas fa-money-check-alt text-2xl mb-2"></i>
-                            <span>تحديد الراتب</span>
-                        </button>
-                        <button onclick="generateReport()" class="bg-warning hover:bg-yellow-700 text-white p-4 rounded-lg flex flex-col items-center justify-center transition duration-300">
-                            <i class="fas fa-file-alt text-2xl mb-2"></i>
-                            <span>تقرير شهري</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Monthly Summary -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h2 class="text-xl font-bold text-dark mb-4">ملخص الشهر</h2>
-                    <div class="space-y-3">
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-gray-600">المصروفات</span>
-                                <span class="text-danger font-bold">65%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-danger h-2 rounded-full" style="width: 65%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-gray-600">التوفير</span>
-                                <span class="text-secondary font-bold">35%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-secondary h-2 rounded-full" style="width: 35%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="flex items-center space-x-4 space-x-reverse">
+            <div class="text-right">
+                <p class="text-gray-600">الرصيد الحالي</p>
+                <p class="text-2xl font-bold text-blue-500" id="currentBalance">5,250.00 ج.م</p>
             </div>
-
-            <!-- Middle Column - Transactions and Chart -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Chart Section -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-dark">الرسم البياني للإنفاق</h2>
-                        <select class="bg-gray-100 border border-gray-300 rounded-lg px-4 py-2">
-                            <option>هذا الشهر</option>
-                            <option>الشهر الماضي</option>
-                            <option>3 أشهر</option>
-                            <option>6 أشهر</option>
-                            <option>هذه السنة</option>
-                        </select>
-                    </div>
-                    <div class="h-64">
-                        <canvas id="spendingChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Recent Transactions -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-dark">آخر المعاملات</h2>
-                        <button onclick="showAllTransactions()" class="text-primary hover:text-blue-700 font-medium">
-                            عرض الكل <i class="fas fa-arrow-left mr-2"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="space-y-4" id="transactionsList">
-                        <!-- Transactions will be loaded here -->
-                    </div>
-                </div>
-
-                <!-- Categories Overview -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h2 class="text-xl font-bold text-dark mb-6">توزيع المصروفات حسب الفئة</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="bg-red-50 p-4 rounded-lg">
-                            <div class="flex items-center mb-2">
-                                <div class="bg-red-100 p-2 rounded-lg mr-3">
-                                    <i class="fas fa-home text-red-600"></i>
-                                </div>
-                                <span class="font-bold text-dark">المنزل</span>
-                            </div>
-                            <p class="text-2xl font-bold text-red-600">1,200 ج.م</p>
-                        </div>
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <div class="flex items-center mb-2">
-                                <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                                    <i class="fas fa-car text-blue-600"></i>
-                                </div>
-                                <span class="font-bold text-dark">المواصلات</span>
-                            </div>
-                            <p class="text-2xl font-bold text-blue-600">800 ج.م</p>
-                        </div>
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <div class="flex items-center mb-2">
-                                <div class="bg-green-100 p-2 rounded-lg mr-3">
-                                    <i class="fas fa-utensils text-green-600"></i>
-                                </div>
-                                <span class="font-bold text-dark">الطعام</span>
-                            </div>
-                            <p class="text-2xl font-bold text-green-600">500 ج.م</p>
-                        </div>
-                        <div class="bg-yellow-50 p-4 rounded-lg">
-                            <div class="flex items-center mb-2">
-                                <div class="bg-yellow-100 p-2 rounded-lg mr-3">
-                                    <i class="fas fa-shopping-cart text-yellow-600"></i>
-                                </div>
-                                <span class="font-bold text-dark">تسوق</span>
-                            </div>
-                            <p class="text-2xl font-bold text-yellow-600">250 ج.م</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white mt-12">
-        <div class="container mx-auto px-4 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <div class="bg-primary p-2 rounded-lg mr-3">
-                            <i class="fas fa-wallet text-white"></i>
-                        </div>
-                        <h3 class="text-xl font-bold">Money Tracker</h3>
-                    </div>
-                    <p class="text-gray-400">تطبيق متكامل لتتبع مصروفاتك وإيراداتك وإدارة ميزانيتك الشهرية بذكاء.</p>
-                </div>
-                
-                <div>
-                    <h4 class="text-lg font-bold mb-4">روابط سريعة</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">الرئيسية</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">التقارير</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">الرسم البياني</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">الإعدادات</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="text-lg font-bold mb-4">الفئات</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">المصروفات</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">الإيرادات</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">الفواتير</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">الادخار</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="text-lg font-bold mb-4">اتصل بنا</h4>
-                    <div class="space-y-3">
-                        <div class="flex items-center">
-                            <i class="fas fa-envelope text-gray-400 mr-3"></i>
-                            <span class="text-gray-400">support@moneytracker.com</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-phone text-gray-400 mr-3"></i>
-                            <span class="text-gray-400">+20 123 456 7890</span>
-                        </div>
-                    </div>
-                    <div class="flex space-x-4 space-x-reverse mt-4">
-                        <a href="#" class="bg-gray-800 hover:bg-gray-700 p-2 rounded-lg">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="bg-gray-800 hover:bg-gray-700 p-2 rounded-lg">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="bg-gray-800 hover:bg-gray-700 p-2 rounded-lg">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                <p>© 2024 Money Tracker. جميع الحقوق محفوظة.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Modals -->
-    <!-- Add Transaction Modal -->
-    <div id="transactionModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold text-dark" id="modalTitle">إضافة معاملة جديدة</h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                
-                <form id="transactionForm" class="space-y-4">
-                    <div>
-                        <label class="block text-gray-700 mb-2">النوع</label>
-                        <div class="flex space-x-4 space-x-reverse">
-                            <label class="flex items-center">
-                                <input type="radio" name="type" value="expense" class="mr-2" checked>
-                                <span class="text-danger">مصروف</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="radio" name="type" value="income" class="mr-2">
-                                <span class="text-secondary">إيراد</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-gray-700 mb-2">المبلغ</label>
-                        <input type="number" id="amount" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="أدخل المبلغ" required>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-gray-700 mb-2">الفئة</label>
-                        <select id="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <option value="food">طعام</option>
-                            <option value="transport">مواصلات</option>
-                            <option value="home">منزل</option>
-                            <option value="shopping">تسوق</option>
-                            <option value="entertainment">ترفيه</option>
-                            <option value="health">صحة</option>
-                            <option value="education">تعليم</option>
-                            <option value="other">أخرى</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-gray-700 mb-2">التاريخ</label>
-                        <input type="date" id="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-gray-700 mb-2">الملاحظات</label>
-                        <textarea id="notes" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="أضف ملاحظات (اختياري)"></textarea>
-                    </div>
-                    
-                    <div class="flex space-x-4 space-x-reverse pt-4">
-                        <button type="button" onclick="closeModal()" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-300">
-                            إلغاء
-                        </button>
-                        <button type="submit" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition duration-300">
-                            حفظ
-                        </button>
-                    </div>
-                </form>
+            <div class="relative">
+                <img src="https://picsum.photos/40?random=1" alt="صورة المستخدم" class="w-10 h-10 rounded-full">
+                <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
             </div>
         </div>
     </div>
+</header>
 
-    <!-- Salary Modal -->
-    <div id="salaryModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold text-dark">تحديد الراتب الشهري</h3>
-                    <button onclick="closeSalaryModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
+<!-- Main Content -->
+<main class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Balance Card -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">الرصيد الشهري</h2>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center"><span class="text-gray-600">الراتب الشهري</span><span class="text-lg font-bold text-blue-500">8,000 ج.م</span></div>
+                    <div class="flex justify-between items-center"><span class="text-gray-600">المصروفات</span><span class="text-lg font-bold text-red-500">2,750 ج.م</span></div>
+                    <div class="flex justify-between items-center"><span class="text-gray-600">الإيرادات الإضافية</span><span class="text-lg font-bold text-green-500">0 ج.م</span></div>
+                    <div class="border-t pt-4 flex justify-between items-center"><span class="text-lg font-bold text-gray-800">الرصيد المتبقي</span><span class="text-2xl font-bold text-blue-500" id="remainingBalance">5,250 ج.م</span></div>
                 </div>
-                
-                <form id="salaryForm" class="space-y-4">
-                    <div>
-                        <label class="block text-gray-700 mb-2">مبلغ الراتب</label>
-                        <input type="number" id="salaryAmount" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="أدخل مبلغ الراتب" required>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-gray-700 mb-2">تاريخ الاستلام</label>
-                        <input type="date" id="salaryDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-gray-700 mb-2">تكرار الاستلام</label>
-                        <select id="salaryFrequency" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <option value="monthly">شهري</option>
-                            <option value="weekly">أسبوعي</option>
-                            <option value="biweekly">كل أسبوعين</option>
-                        </select>
-                    </div>
-                    
-                    <div class="flex items-center">
-                        <input type="checkbox" id="autoAdd" class="mr-3">
-                        <label for="autoAdd" class="text-gray-700">إضافة الراتب تلقائياً في تاريخ الاستلام</label>
-                    </div>
-                    
-                    <div class="flex space-x-4 space-x-reverse pt-4">
-                        <button type="button" onclick="closeSalaryModal()" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-300">
-                            إلغاء
-                        </button>
-                        <button type="submit" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition duration-300">
-                            حفظ الراتب
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
-    </div>
 
-    <!-- Report Modal -->
-    <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold text-dark">تقرير شهري</h3>
-                    <button onclick="closeReportModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-xl"></i>
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">إجراءات سريعة</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="showAddTransaction('expense')" class="bg-red-500 hover:bg-red-700 text-white p-4 rounded-lg flex flex-col items-center justify-center">
+                        <i class="fas fa-minus-circle text-2xl mb-2"></i><span>إضافة مصروف</span>
                     </button>
-                </div>
-                
-                <div class="space-y-6">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <p class="text-gray-600">إجمالي الإيرادات</p>
-                            <p class="text-2xl font-bold text-secondary">8,000 ج.م</p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <p class="text-gray-600">إجمالي المصروفات</p>
-                            <p class="text-2xl font-bold text-danger">2,750 ج.م</p>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h4 class="font-bold text-dark mb-3">توزيع المصروفات</h4>
-                        <div class="space-y-2">
-                            <div class="flex justify-between">
-                                <span>المنزل</span>
-                                <span class="font-bold">1,200 ج.م</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>المواصلات</span>
-                                <span class="font-bold">800 ج.م</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>الطعام</span>
-                                <span class="font-bold">500 ج.م</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>التسوق</span>
-                                <span class="font-bold">250 ج.م</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="border-t pt-4">
-                        <div class="flex justify-between items-center">
-                            <span class="text-lg font-bold">الرصيد النهائي</span>
-                            <span class="text-2xl font-bold text-primary">5,250 ج.م</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex space-x-4 space-x-reverse">
-                        <button onclick="printReport()" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition duration-300">
-                            <i class="fas fa-print mr-2"></i> طباعة التقرير
-                        </button>
-                        <button onclick="downloadReport()" class="flex-1 px-4 py-2 border border-primary text-primary rounded-lg hover:bg-blue-50 transition duration-300">
-                            <i class="fas fa-download mr-2"></i> تحميل PDF
-                        </button>
-                    </div>
+                    <button onclick="showAddTransaction('income')" class="bg-green-500 hover:bg-green-700 text-white p-4 rounded-lg flex flex-col items-center justify-center">
+                        <i class="fas fa-plus-circle text-2xl mb-2"></i><span>إضافة إيراد</span>
+                    </button>
+                    <button onclick="showSalaryModal()" class="bg-blue-500 hover:bg-blue-700 text-white p-4 rounded-lg flex flex-col items-center justify-center">
+                        <i class="fas fa-money-check-alt text-2xl mb-2"></i><span>تحديد الراتب</span>
+                    </button>
+                    <button onclick="generateReport()" class="bg-yellow-500 hover:bg-yellow-700 text-white p-4 rounded-lg flex flex-col items-center justify-center">
+                        <i class="fas fa-file-alt text-2xl mb-2"></i><span>تقرير شهري</span>
+                    </button>
                 </div>
             </div>
         </div>
+
+        <!-- Right Column -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Chart -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">الرسم البياني للإنفاق</h2>
+                    <select class="bg-gray-100 border border-gray-300 rounded-lg px-4 py-2">
+                        <option>هذا الشهر</option>
+                        <option>الشهر الماضي</option>
+                        <option>3 أشهر</option>
+                        <option>6 أشهر</option>
+                        <option>هذه السنة</option>
+                    </select>
+                </div>
+                <div class="h-64">
+                    <canvas id="spendingChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">آخر المعاملات</h2>
+                    <button onclick="showAllTransactions()" class="text-blue-500 hover:text-blue-700 font-medium">عرض الكل <i class="fas fa-arrow-left mr-2"></i></button>
+                </div>
+                <div class="space-y-4" id="transactionsList"></div>
+            </div>
+        </div>
     </div>
+</main>
 
-    <script>
-        // Define data at the beginning
-        const transactions = [
-            {
-                "id": 1,
-                "type": "expense",
-                "amount": 500,
-                "category": "food",
-                "date": "2024-01-15",
-                "notes": "شراء مواد غذائية من السوبر ماركت",
-                "icon": "fas fa-utensils"
-            },
-            {
-                "id": 2,
-                "type": "expense",
-                "amount": 200,
-                "category": "transport",
-                "date": "2024-01-14",
-                "notes": "وقود السيارة",
-                "icon": "fas fa-car"
-            },
-            {
-                "id": 3,
-                "type": "expense",
-                "amount": 300,
-                "category": "home",
-                "date": "2024-01-13",
-                "notes": "فاتورة الكهرباء",
-                "icon": "fas fa-home"
-            },
-            {
-                "id": 4,
-                "type": "expense",
-                "amount": 150,
-                "category": "shopping",
-                "date": "2024-01-12",
-                "notes": "ملابس جديدة",
-                "icon": "fas fa-shopping-cart"
-            },
-            {
-                "id": 5,
-                "type": "income",
-                "amount": 8000,
-                "category": "salary",
-                "date": "2024-01-01",
-                "notes": "الراتب الشهري",
-                "icon": "fas fa-money-check-alt"
-            }
-        ];
+<!-- Modals -->
+<div id="transactionModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800" id="modalTitle">إضافة معاملة جديدة</h3>
+            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        <form id="transactionForm" class="space-y-4">
+            <div>
+                <label class="block text-gray-700 mb-2">النوع</label>
+                <div class="flex space-x-4 space-x-reverse">
+                    <label class="flex items-center"><input type="radio" name="type" value="expense" checked class="mr-2"><span class="text-red-500">مصروف</span></label>
+                    <label class="flex items-center"><input type="radio" name="type" value="income" class="mr-2"><span class="text-green-500">إيراد</span></label>
+                </div>
+            </div>
+            <div><label class="block text-gray-700 mb-2">المبلغ</label><input type="number" id="amount" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="أدخل المبلغ" required></div>
+            <div><label class="block text-gray-700 mb-2">الفئة</label><select id="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg"><option value="food">طعام</option><option value="transport">مواصلات</option><option value="home">منزل</option><option value="shopping">تسوق</option><option value="entertainment">ترفيه</option><option value="health">صحة</option><option value="education">تعليم</option><option value="other">أخرى</option></select></div>
+            <div><label class="block text-gray-700 mb-2">التاريخ</label><input type="date" id="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required></div>
+            <div><label class="block text-gray-700 mb-2">الملاحظات</label><textarea id="notes" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="أضف ملاحظات (اختياري)"></textarea></div>
+            <div class="flex space-x-4 space-x-reverse pt-4">
+                <button type="button" onclick="closeModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">إلغاء</button>
+                <button type="submit" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700">حفظ</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-        const categories = {
-            "food": { "name": "طعام", "color": "text-green-600", "bg": "bg-green-100" },
-            "transport": { "name": "مواصلات", "color": "text-blue-600", "bg": "bg-blue-100" },
-            "home": { "name": "منزل", "color": "text-red-600", "bg": "bg-red-100" },
-            "shopping": { "name": "تسوق", "color": "text-yellow-600", "bg": "bg-yellow-100" },
-            "entertainment": { "name": "ترفيه", "color": "text-purple-600", "bg": "bg-purple-100" },
-            "health": { "name": "صحة", "color": "text-pink-600", "bg": "bg-pink-100" },
-            "education": { "name": "تعليم", "color": "text-indigo-600", "bg": "bg-indigo-100" },
-            "other": { "name": "أخرى", "color": "text-gray-600", "bg": "bg-gray-100" },
-            "salary": { "name": "راتب", "color": "text-secondary", "bg": "bg-green-100" }
-        };
+<!-- JS -->
+<script>
+const transactions = [
+    {id:1,type:'expense',amount:500,category:'food',date:'2024-01-15',notes:'شراء مواد غذائية',icon:'fas fa-utensils'},
+    {id:2,type:'expense',amount:200,category:'transport',date:'2024-01-14',notes:'وقود السيارة',icon:'fas fa-car'},
+    {id:3,type:'income',amount:8000,category:'salary',date:'2024-01-01',notes:'الراتب الشهري',icon:'fas fa-money-check-alt'}
+];
 
-        // Initialize Chart
-        let spendingChart;
-        
-        function initializeChart() {
-            const ctx = document.getElementById('spendingChart').getContext('2d');
-            spendingChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['1', '5', '10', '15', '20', '25', '30'],
-                    datasets: [{
-                        label: 'المصروفات',
-                        data: [200, 400, 300, 500, 400, 600, 550],
-                        borderColor: '#EF4444',
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }, {
-                        label: 'الإيرادات',
-                        data: [8000, 0, 0, 0, 0, 0, 0],
-                        borderColor: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            rtl: true,
-                            labels: {
-                                font: {
-                                    family: "'Cairo', sans-serif"
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: {
-                                    family: "'Cairo', sans-serif"
-                                }
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    family: "'Cairo', sans-serif"
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
+const categories = {
+    food:{name:'طعام',color:'text-green-600',bg:'bg-green-100'},
+    transport:{name:'مواصلات',color:'text-blue-600',bg:'bg-blue-100'},
+    home:{name:'منزل',color:'text-red-600',bg:'bg-red-100'},
+    shopping:{name:'تسوق',color:'text-yellow-600',bg:'bg-yellow-100'},
+    entertainment:{name:'ترفيه',color:'text-purple-600',bg:'bg-purple-100'},
+    health:{name:'صحة',color:'text-pink-600',bg:'bg-pink-100'},
+    education:{name:'تعليم',color:'text-indigo-600',bg:'bg-indigo-100'},
+    other:{name:'أخرى',color:'text-gray-600',bg:'bg-gray-100'},
+    salary:{name:'راتب',color:'text-green-500',bg:'bg-green-100'}
+};
 
-        // Load transactions
-        function loadTransactions() {
-            const container = document.getElementById('transactionsList');
-            container.innerHTML = '';
-            
-            transactions.slice().reverse().forEach(transaction => {
-                const category = categories[transaction.category];
-                const transactionElement = document.createElement('div');
-                transactionElement.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300';
-                
-                transactionElement.innerHTML = `
-                    <div class="flex items-center">
-                        <div class="${category.bg} p-3 rounded-lg mr-4">
-                            <i class="${transaction.icon} ${category.color}"></i>
-                        </div>
-                        <div>
-                            <p class="font-bold text-dark">${category.name}</p>
-                            <p class="text-gray-600 text-sm">${transaction.notes}</p>
-                            <p class="text-gray-500 text-xs mt-1">${transaction.date}</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="${transaction.type === 'expense' ? 'text-danger' : 'text-secondary'} font-bold text-lg">
-                            ${transaction.type === 'expense' ? '-' : '+'} ${transaction.amount.toLocaleString()} ج.م
-                        </p>
-                        <p class="text-gray-500 text-sm">${transaction.type === 'expense' ? 'مصروف' : 'إيراد'}</p>
-                    </div>
-                `;
-                
-                container.appendChild(transactionElement);
-            });
-            
-            updateBalance();
-        }
+function getIconForCategory(category){
+    const icons={
+        food:'fas fa-utensils',transport:'fas fa-car',home:'fas fa-home',shopping:'fas fa-shopping-cart',
+        entertainment:'fas fa-film',health:'fas fa-heartbeat',education:'fas fa-graduation-cap',
+        other:'fas fa-receipt',salary:'fas fa-money-check-alt'
+    };
+    return icons[category]||'fas fa-receipt';
+}
 
-        // Update balance
-        function updateBalance() {
-            const totalIncome = transactions
-                .filter(t => t.type === 'income')
-                .reduce((sum, t) => sum + t.amount, 0);
-            
-            const totalExpenses = transactions
-                .filter(t => t.type === 'expense')
-                .reduce((sum, t) => sum + t.amount, 0);
-            
-            const balance = totalIncome - totalExpenses;
-            
-            document.getElementById('currentBalance').textContent = balance.toLocaleString() + ' ج.م';
-            document.getElementById('remainingBalance').textContent = balance.toLocaleString() + ' ج.م';
-        }
+function loadTransactions(){
+    const container=document.getElementById('transactionsList');
+    container.innerHTML='';
+    transactions.slice().reverse().forEach(t=>{
+        const cat=categories[t.category];
+        const el=document.createElement('div');
+        el.className='flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100';
+        el.innerHTML=`<div class="flex items-center">
+            <div class="${cat.bg} p-3 rounded-lg mr-4"><i class="${t.icon} ${cat.color}"></i></div>
+            <div><p class="font-bold text-gray-800">${cat.name}</p><p class="text-gray-600 text-sm">${t.notes}</p><p class="text-gray-500 text-xs mt-1">${t.date}</p></div>
+        </div>
+        <div class="text-right">
+            <p class="${t.type==='expense'?'text-red-500':'text-green-500'} font-bold text-lg">
+                ${t.type==='expense'?'-':'+'} ${t.amount.toLocaleString()} ج.م
+            </p>
+            <p class="text-gray-500 text-sm">${t.type==='expense'?'مصروف':'إيراد'}</p>
+        </div>`;
+        container.appendChild(el);
+    });
+    updateBalance();
+}
 
-        // Modal functions
-        function showAddTransaction(type) {
-            const modal = document.getElementById('transactionModal');
-            const title = document.getElementById('modalTitle');
-            const form = document.getElementById('transactionForm');
-            
-            if (type === 'expense') {
-                title.textContent = 'إضافة مصروف جديد';
-                form.querySelector('input[value="expense"]').checked = true;
-            } else {
-                title.textContent = 'إضافة إيراد جديد';
-                form.querySelector('input[value="income"]').checked = true;
-            }
-            
-            document.getElementById('date').value = new Date().toISOString().split('T')[0];
-            modal.classList.remove('hidden');
-        }
+function updateBalance(){
+    const totalIncome=transactions.filter(t=>t.type==='income').reduce((sum,t)=>sum+t.amount,0);
+    const totalExpenses=transactions.filter(t=>t.type==='expense').reduce((sum,t)=>sum+t.amount,0);
+    const balance=totalIncome-totalExpenses;
+    document.getElementById('currentBalance').textContent=balance.toLocaleString()+' ج.م';
+    document.getElementById('remainingBalance').textContent=balance.toLocaleString()+' ج.م';
+}
 
-        function showSalaryModal() {
-            document.getElementById('salaryModal').classList.remove('hidden');
-        }
+function showAddTransaction(type){
+    const modal=document.getElementById('transactionModal');
+    const title=document.getElementById('modalTitle');
+    title.textContent=type==='expense'?'إضافة مصروف جديد':'إضافة إيراد جديد';
+    document.querySelector(`#transactionForm input[value="${type}"]`).checked=true;
+    document.getElementById('date').value=new Date().toISOString().split('T')[0];
+    modal.classList.remove('hidden');
+}
+function closeModal(){document.getElementById('transactionModal').classList.add('hidden');document.getElementById('transactionForm').reset();}
+function showAllTransactions(){alert('عرض جميع المعاملات');}
 
-        function generateReport() {
-            document.getElementById('reportModal').classList.remove('hidden');
-        }
+document.getElementById('transactionForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    const type=this.querySelector('input[name="type"]:checked').value;
+    const amount=parseFloat(document.getElementById('amount').value);
+    const category=document.getElementById('category').value;
+    const date=document.getElementById('date').value;
+    const notes=document.getElementById('notes').value;
+    transactions.push({id:transactions.length+1,type,amount,category,date,notes,icon:getIconForCategory(category)});
+    loadTransactions();
+    closeModal();
+    alert('تم إضافة المعاملة بنجاح!');
+});
 
-        function closeModal() {
-            document.getElementById('transactionModal').classList.add('hidden');
-            document.getElementById('transactionForm').reset();
-        }
-
-        function closeSalaryModal() {
-            document.getElementById('salaryModal').classList.add('hidden');
-            document.getElementById('salaryForm').reset();
-        }
-
-        function closeReportModal() {
-            document.getElementById('reportModal').classList.add('hidden');
-        }
-
-        function showAllTransactions() {
-            alert('عرض جميع المعاملات - هذه الصفحة ستظهر جميع المعاملات المخزنة');
-        }
-
-        function printReport() {
-            window.print();
-        }
-
-        function downloadReport() {
-            alert('جارٍ تحميل التقرير بصيغة PDF...');
-        }
-
-        // Form submissions
-        document.getElementById('transactionForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const type = this.querySelector('input[name="type"]:checked').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-            const category = document.getElementById('category').value;
-            const date = document.getElementById('date').value;
-            const notes = document.getElementById('notes').value;
-            
-            const newTransaction = {
-                id: transactions.length + 1,
-                type: type,
-                amount: amount,
-                category: category,
-                date: date,
-                notes: notes,
-                icon: getIconForCategory(category)
-            };
-            
-            transactions.push(newTransaction);
-            loadTransactions();
-            closeModal();
-            
-            alert('تم إضافة المعاملة بنجاح!');
-        });
-
-        document.getElementById('salaryForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const amount = parseFloat(document.getElementById('salaryAmount').value);
-            const date = document.getElementById('salaryDate').value;
-            const frequency = document.getElementById('salaryFrequency').value;
-            const autoAdd = document.getElementById('autoAdd').checked;
-            
-            // Add salary transaction
-            const salaryTransaction = {
-                id: transactions.length + 1,
-                type: 'income',
-                amount: amount,
-                category: 'salary',
-                date: date,
-                notes: `الراتب الشهري ${frequency === 'monthly' ? '(شهري)' : frequency === 'weekly' ? '(أسبوعي)' : '(كل أسبوعين)'}`,
-                icon: 'fas fa-money-check-alt'
-            };
-            
-            transactions.push(salaryTransaction);
-            loadTransactions();
-            closeSalaryModal();
-            
-            alert('تم حفظ إعدادات الراتب بنجاح!');
-        });
-
-        function getIconForCategory(category) {
-            const icons = {
-                'food': 'fas fa-utensils',
-                'transport': 'fas fa-car',
-                'home': 'fas fa-home',
-                'shopping': 'fas fa-shopping-cart',
-                'entertainment': 'fas fa-film',
-                'health': 'fas fa-heartbeat',
-                'education': 'fas fa-graduation-cap',
-                'other': 'fas fa-receipt
+// Chart
+let spendingChart;
+function initializeChart(){
+    const ctx=document.getElementById('spendingChart').getContext('2d');
+    spendingChart=new Chart(ctx,{type:'line',data:{labels:['1','5','10','15','20','25','30'],datasets:[{label:'المصروفات',data:[200,400,300,500,400,600,550],borderColor:'#EF4444',backgroundColor:'rgba(239,68,68,0.1)',borderWidth:2,fill:true,tension:0.4},{label:'الإيرادات',data:[8000,0,0,0,0,0,0],borderColor:'#10B981',backgroundColor:'rgba(16,185,129,0.1)',borderWidth:2,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',rtl:true,labels:{font:{family:'Cairo, sans-serif'}}}},scales:{y:{beginAtZero:true,ticks:{font:{family:'Cairo, sans-serif'}}},x:{ticks:{font:{family:'Cairo, sans-serif'}}}}}});
+}
+window.addEventListener('DOMContentLoaded',()=>{loadTransactions();initializeChart();});
+</script>
