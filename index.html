@@ -759,12 +759,22 @@
         });
 
         function getIconForCategory(category) {
-            const icons = {
-                'food': 'fas fa-utensils',
-                'transport': 'fas fa-car',
-                'home': 'fas fa-home',
-                'shopping': 'fas fa-shopping-cart',
-                'entertainment': 'fas fa-film',
-                'health': 'fas fa-heartbeat',
-                'education': 'fas fa-graduation-cap',
-                'other': 'fas fa-receipt
+    const icons = {
+        'food': 'fas fa-utensils',
+        'transport': 'fas fa-car',
+        'home': 'fas fa-home',
+        'shopping': 'fas fa-shopping-cart',
+        'entertainment': 'fas fa-film',
+        'health': 'fas fa-heartbeat',
+        'education': 'fas fa-graduation-cap',
+        'other': 'fas fa-receipt',
+        'salary': 'fas fa-money-check-alt'
+    };
+    return icons[category] || 'fas fa-receipt';
+}
+
+// Initialize everything after page load
+window.addEventListener('DOMContentLoaded', () => {
+    loadTransactions();
+    initializeChart();
+});
