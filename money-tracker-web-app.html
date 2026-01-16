@@ -1,230 +1,110 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <base target="_self">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Money Tracker - تتبع المال والإنفاق</title>
-    <meta name="description" content="تطبيق ويب لتتبع المصروفات والإيرادات والنفقات الشهرية مع رسوم بيانية وتقارير">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Cairo', sans-serif; }
-        .rtl { direction: rtl; }
-        .ltr { direction: ltr; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>صيدلية رحاب عاشور</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen bg-gray-50">
+<body class="bg-gray-50 font-sans">
 
-<!-- Header -->
-<header class="bg-white shadow-md sticky top-0 z-50">
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-4 space-x-reverse">
-            <div class="bg-blue-500 p-3 rounded-lg">
-                <i class="fas fa-wallet text-white text-2xl"></i>
-            </div>
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Money Tracker</h1>
-                <p class="text-gray-600">تطبيق تتبع المال والإنفاق</p>
-            </div>
-        </div>
-        <div class="flex items-center space-x-4 space-x-reverse">
-            <div class="text-right">
-                <p class="text-gray-600">الرصيد الحالي</p>
-                <p class="text-2xl font-bold text-blue-500" id="currentBalance">5,250.00 ج.م</p>
-            </div>
-            <div class="relative">
-                <img src="https://picsum.photos/40?random=1" alt="صورة المستخدم" class="w-10 h-10 rounded-full">
-                <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
-            </div>
-        </div>
-    </div>
-</header>
+  <!-- Header -->
+  <header class="bg-green-600 text-white p-4 mb-6 rounded-lg shadow">
+    <h1 class="text-2xl font-bold">صيدلية رحاب عاشور</h1>
+    <p>تصفح منتجاتنا وأضف ما تحب إلى السلة</p>
+  </header>
 
-<!-- Main Content -->
-<main class="container mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Left Column -->
-        <div class="lg:col-span-1 space-y-6">
-            <!-- Balance Card -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">الرصيد الشهري</h2>
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center"><span class="text-gray-600">الراتب الشهري</span><span class="text-lg font-bold text-blue-500">8,000 ج.م</span></div>
-                    <div class="flex justify-between items-center"><span class="text-gray-600">المصروفات</span><span class="text-lg font-bold text-red-500">2,750 ج.م</span></div>
-                    <div class="flex justify-between items-center"><span class="text-gray-600">الإيرادات الإضافية</span><span class="text-lg font-bold text-green-500">0 ج.م</span></div>
-                    <div class="border-t pt-4 flex justify-between items-center"><span class="text-lg font-bold text-gray-800">الرصيد المتبقي</span><span class="text-2xl font-bold text-blue-500" id="remainingBalance">5,250 ج.م</span></div>
-                </div>
-            </div>
+  <main class="container mx-auto px-4">
 
-            <!-- Quick Actions -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">إجراءات سريعة</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="showAddTransaction('expense')" class="bg-red-500 hover:bg-red-700 text-white p-4 rounded-lg flex flex-col items-center justify-center">
-                        <i class="fas fa-minus-circle text-2xl mb-2"></i><span>إضافة مصروف</span>
-                    </button>
-                    <button onclick="showAddTransaction('income')" class="bg-green-500 hover:bg-green-700 text-white p-4 rounded-lg flex flex-col items-center justify-center">
-                        <i class="fas fa-plus-circle text-2xl mb-2"></i><span>إضافة إيراد</span>
-                    </button>
-                    <button onclick="showSalaryModal()" class="bg-blue-500 hover:bg-blue-700 text-white p-4 rounded-lg flex flex-col items-center justify-center">
-                        <i class="fas fa-money-check-alt text-2xl mb-2"></i><span>تحديد الراتب</span>
-                    </button>
-                    <button onclick="generateReport()" class="bg-yellow-500 hover:bg-yellow-700 text-white p-4 rounded-lg flex flex-col items-center justify-center">
-                        <i class="fas fa-file-alt text-2xl mb-2"></i><span>تقرير شهري</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+    <!-- Categories -->
+    <section class="mb-6">
+      <h2 class="text-xl font-bold mb-4">الأقسام</h2>
+      <div class="flex space-x-4 space-x-reverse overflow-x-auto">
+        <button onclick="filterCategory('all')" class="bg-green-100 text-green-800 px-4 py-2 rounded">الكل</button>
+        <button onclick="filterCategory('medicines')" class="bg-green-100 text-green-800 px-4 py-2 rounded">أدوية</button>
+        <button onclick="filterCategory('vitamins')" class="bg-green-100 text-green-800 px-4 py-2 rounded">فيتامينات</button>
+        <button onclick="filterCategory('supplies')" class="bg-green-100 text-green-800 px-4 py-2 rounded">مستلزمات</button>
+      </div>
+    </section>
 
-        <!-- Right Column -->
-        <div class="lg:col-span-2 space-y-6">
-            <!-- Chart -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold text-gray-800">الرسم البياني للإنفاق</h2>
-                    <select class="bg-gray-100 border border-gray-300 rounded-lg px-4 py-2">
-                        <option>هذا الشهر</option>
-                        <option>الشهر الماضي</option>
-                        <option>3 أشهر</option>
-                        <option>6 أشهر</option>
-                        <option>هذه السنة</option>
-                    </select>
-                </div>
-                <div class="h-64">
-                    <canvas id="spendingChart"></canvas>
-                </div>
-            </div>
+    <!-- Products Grid -->
+    <section class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="productsGrid">
+      <!-- المنتجات هتتحمل هنا ديناميكي -->
+    </section>
 
-            <!-- Recent Transactions -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold text-gray-800">آخر المعاملات</h2>
-                    <button onclick="showAllTransactions()" class="text-blue-500 hover:text-blue-700 font-medium">عرض الكل <i class="fas fa-arrow-left mr-2"></i></button>
-                </div>
-                <div class="space-y-4" id="transactionsList"></div>
-            </div>
-        </div>
-    </div>
-</main>
+  </main>
 
-<!-- Modals -->
-<div id="transactionModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-gray-800" id="modalTitle">إضافة معاملة جديدة</h3>
-            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button>
-        </div>
-        <form id="transactionForm" class="space-y-4">
-            <div>
-                <label class="block text-gray-700 mb-2">النوع</label>
-                <div class="flex space-x-4 space-x-reverse">
-                    <label class="flex items-center"><input type="radio" name="type" value="expense" checked class="mr-2"><span class="text-red-500">مصروف</span></label>
-                    <label class="flex items-center"><input type="radio" name="type" value="income" class="mr-2"><span class="text-green-500">إيراد</span></label>
-                </div>
-            </div>
-            <div><label class="block text-gray-700 mb-2">المبلغ</label><input type="number" id="amount" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="أدخل المبلغ" required></div>
-            <div><label class="block text-gray-700 mb-2">الفئة</label><select id="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg"><option value="food">طعام</option><option value="transport">مواصلات</option><option value="home">منزل</option><option value="shopping">تسوق</option><option value="entertainment">ترفيه</option><option value="health">صحة</option><option value="education">تعليم</option><option value="other">أخرى</option></select></div>
-            <div><label class="block text-gray-700 mb-2">التاريخ</label><input type="date" id="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required></div>
-            <div><label class="block text-gray-700 mb-2">الملاحظات</label><textarea id="notes" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="أضف ملاحظات (اختياري)"></textarea></div>
-            <div class="flex space-x-4 space-x-reverse pt-4">
-                <button type="button" onclick="closeModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">إلغاء</button>
-                <button type="submit" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700">حفظ</button>
-            </div>
-        </form>
-    </div>
-</div>
+  <!-- Cart Sidebar -->
+  <aside class="fixed top-4 left-4 bg-white p-4 rounded shadow w-64">
+    <h3 class="font-bold mb-2">السلة</h3>
+    <ul id="cartList" class="mb-2"></ul>
+    <p class="font-bold">الإجمالي: <span id="total">0</span> ج.م</p>
+  </aside>
 
-<!-- JS -->
-<script>
-const transactions = [
-    {id:1,type:'expense',amount:500,category:'food',date:'2024-01-15',notes:'شراء مواد غذائية',icon:'fas fa-utensils'},
-    {id:2,type:'expense',amount:200,category:'transport',date:'2024-01-14',notes:'وقود السيارة',icon:'fas fa-car'},
-    {id:3,type:'income',amount:8000,category:'salary',date:'2024-01-01',notes:'الراتب الشهري',icon:'fas fa-money-check-alt'}
-];
+  <!-- Footer -->
+  <footer class="bg-green-600 text-white mt-12 p-4 text-center rounded-lg shadow">
+    <p>© 2026 صيدلية رحاب عاشور. جميع الحقوق محفوظة.</p>
+  </footer>
 
-const categories = {
-    food:{name:'طعام',color:'text-green-600',bg:'bg-green-100'},
-    transport:{name:'مواصلات',color:'text-blue-600',bg:'bg-blue-100'},
-    home:{name:'منزل',color:'text-red-600',bg:'bg-red-100'},
-    shopping:{name:'تسوق',color:'text-yellow-600',bg:'bg-yellow-100'},
-    entertainment:{name:'ترفيه',color:'text-purple-600',bg:'bg-purple-100'},
-    health:{name:'صحة',color:'text-pink-600',bg:'bg-pink-100'},
-    education:{name:'تعليم',color:'text-indigo-600',bg:'bg-indigo-100'},
-    other:{name:'أخرى',color:'text-gray-600',bg:'bg-gray-100'},
-    salary:{name:'راتب',color:'text-green-500',bg:'bg-green-100'}
-};
+  <script>
+    const products = [
+      {id:1, name:'دواء مسكن', price:50, category:'medicines', img:'https://via.placeholder.com/150'},
+      {id:2, name:'دواء مغص', price:70, category:'medicines', img:'https://via.placeholder.com/150'},
+      {id:3, name:'فيتامين سي', price:120, category:'vitamins', img:'https://via.placeholder.com/150'},
+      {id:4, name:'فيتامين د', price:100, category:'vitamins', img:'https://via.placeholder.com/150'},
+      {id:5, name:'شاش معقم', price:30, category:'supplies', img:'https://via.placeholder.com/150'},
+      {id:6, name:'قطنة', price:20, category:'supplies', img:'https://via.placeholder.com/150'},
+      {id:7, name:'دواء نزلة برد', price:90, category:'medicines', img:'https://via.placeholder.com/150'},
+      {id:8, name:'دواء مغص اطفال', price:60, category:'medicines', img:'https://via.placeholder.com/150'},
+      {id:9, name:'فيتامين متعدد', price:150, category:'vitamins', img:'https://via.placeholder.com/150'},
+      {id:10, name:'مستلزمات طبية صغيرة', price:40, category:'supplies', img:'https://via.placeholder.com/150'}
+    ];
 
-function getIconForCategory(category){
-    const icons={
-        food:'fas fa-utensils',transport:'fas fa-car',home:'fas fa-home',shopping:'fas fa-shopping-cart',
-        entertainment:'fas fa-film',health:'fas fa-heartbeat',education:'fas fa-graduation-cap',
-        other:'fas fa-receipt',salary:'fas fa-money-check-alt'
-    };
-    return icons[category]||'fas fa-receipt';
-}
+    let cart = [];
+    let total = 0;
+    const productsGrid = document.getElementById('productsGrid');
 
-function loadTransactions(){
-    const container=document.getElementById('transactionsList');
-    container.innerHTML='';
-    transactions.slice().reverse().forEach(t=>{
-        const cat=categories[t.category];
-        const el=document.createElement('div');
-        el.className='flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100';
-        el.innerHTML=`<div class="flex items-center">
-            <div class="${cat.bg} p-3 rounded-lg mr-4"><i class="${t.icon} ${cat.color}"></i></div>
-            <div><p class="font-bold text-gray-800">${cat.name}</p><p class="text-gray-600 text-sm">${t.notes}</p><p class="text-gray-500 text-xs mt-1">${t.date}</p></div>
-        </div>
-        <div class="text-right">
-            <p class="${t.type==='expense'?'text-red-500':'text-green-500'} font-bold text-lg">
-                ${t.type==='expense'?'-':'+'} ${t.amount.toLocaleString()} ج.م
-            </p>
-            <p class="text-gray-500 text-sm">${t.type==='expense'?'مصروف':'إيراد'}</p>
-        </div>`;
-        container.appendChild(el);
-    });
-    updateBalance();
-}
+    function renderProducts(filter='all') {
+      productsGrid.innerHTML = '';
+      products
+        .filter(p => filter === 'all' || p.category === filter)
+        .forEach(p => {
+          const div = document.createElement('div');
+          div.className = 'bg-white p-4 rounded shadow';
+          div.innerHTML = `
+            <img src="${p.img}" alt="${p.name}" class="mb-2">
+            <h2 class="font-bold text-lg">${p.name}</h2>
+            <p>السعر: ${p.price} ج.م</p>
+            <button onclick="addToCart('${p.name}', ${p.price})" class="bg-green-600 text-white px-4 py-2 mt-2 rounded">أضف إلى السلة</button>
+          `;
+          productsGrid.appendChild(div);
+        });
+    }
 
-function updateBalance(){
-    const totalIncome=transactions.filter(t=>t.type==='income').reduce((sum,t)=>sum+t.amount,0);
-    const totalExpenses=transactions.filter(t=>t.type==='expense').reduce((sum,t)=>sum+t.amount,0);
-    const balance=totalIncome-totalExpenses;
-    document.getElementById('currentBalance').textContent=balance.toLocaleString()+' ج.م';
-    document.getElementById('remainingBalance').textContent=balance.toLocaleString()+' ج.م';
-}
+    function filterCategory(category) {
+      renderProducts(category);
+    }
 
-function showAddTransaction(type){
-    const modal=document.getElementById('transactionModal');
-    const title=document.getElementById('modalTitle');
-    title.textContent=type==='expense'?'إضافة مصروف جديد':'إضافة إيراد جديد';
-    document.querySelector(`#transactionForm input[value="${type}"]`).checked=true;
-    document.getElementById('date').value=new Date().toISOString().split('T')[0];
-    modal.classList.remove('hidden');
-}
-function closeModal(){document.getElementById('transactionModal').classList.add('hidden');document.getElementById('transactionForm').reset();}
-function showAllTransactions(){alert('عرض جميع المعاملات');}
+    function addToCart(name, price) {
+      cart.push({name, price});
+      total += price;
+      renderCart();
+    }
 
-document.getElementById('transactionForm').addEventListener('submit',function(e){
-    e.preventDefault();
-    const type=this.querySelector('input[name="type"]:checked').value;
-    const amount=parseFloat(document.getElementById('amount').value);
-    const category=document.getElementById('category').value;
-    const date=document.getElementById('date').value;
-    const notes=document.getElementById('notes').value;
-    transactions.push({id:transactions.length+1,type,amount,category,date,notes,icon:getIconForCategory(category)});
-    loadTransactions();
-    closeModal();
-    alert('تم إضافة المعاملة بنجاح!');
-});
+    function renderCart() {
+      const cartList = document.getElementById('cartList');
+      cartList.innerHTML = '';
+      cart.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - ${item.price} ج.م`;
+        cartList.appendChild(li);
+      });
+      document.getElementById('total').textContent = total;
+    }
 
-// Chart
-let spendingChart;
-function initializeChart(){
-    const ctx=document.getElementById('spendingChart').getContext('2d');
-    spendingChart=new Chart(ctx,{type:'line',data:{labels:['1','5','10','15','20','25','30'],datasets:[{label:'المصروفات',data:[200,400,300,500,400,600,550],borderColor:'#EF4444',backgroundColor:'rgba(239,68,68,0.1)',borderWidth:2,fill:true,tension:0.4},{label:'الإيرادات',data:[8000,0,0,0,0,0,0],borderColor:'#10B981',backgroundColor:'rgba(16,185,129,0.1)',borderWidth:2,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',rtl:true,labels:{font:{family:'Cairo, sans-serif'}}}},scales:{y:{beginAtZero:true,ticks:{font:{family:'Cairo, sans-serif'}}},x:{ticks:{font:{family:'Cairo, sans-serif'}}}}}});
-}
-window.addEventListener('DOMContentLoaded',()=>{loadTransactions();initializeChart();});
-</script>
+    // initial render
+    renderProducts();
+  </script>
+
+</body>
+</html>
